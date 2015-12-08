@@ -5,7 +5,7 @@ import (
 )
 
 func FileLine() (string, int) {
-	_, file, line, ok := runtime.Caller(1)
+	_, file, line, ok := runtime.Caller(1) //这里的1 为一次func封装，多一次就要加1
 	if !ok {
 		file = "???"
 		line = 0
