@@ -22,3 +22,21 @@ func Uint32toIPv4(ipint uint32) string {
 	d := ipint - (a << 24) - (b << 16) - (c << 8)
 	return fmt.Sprintf("%v.%v.%v.%v", a, b, c, d)
 }
+
+//获取本机网卡IP
+func GetLocalIP() ([]string, error) {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return nil, err
+	}
+	var ips []string
+	for _, v := range addrs {
+		if ipnet, ok := v.(*net.IPNet); ok {
+			ip := ipnet.IP
+			if ip.To4() != nil && !ip.IsLoopback() {
+				ips = append(ips, ip.String())
+			}
+		}
+	}
+	return ips, nil
+}
