@@ -47,6 +47,7 @@ func GetLocalIP() ([]string, error) {
 func CIDRToUint32(cidr string) (start uint32, end uint32, err error) {
 	s := strings.Split(cidr, "/")
 	if len(s) != 2 {
+		err = errors.New(cidr + " is not CIDR")
 		return
 	}
 	var i32 uint32 = 32
