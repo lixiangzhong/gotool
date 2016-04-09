@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"strconv"
+	"strings"
 )
 
 func IPv4toUint32(ip string) (uint32, error) {
@@ -39,4 +41,23 @@ func GetLocalIP() ([]string, error) {
 		}
 	}
 	return ips, nil
+}
+
+//将CIDR转成数字,如  1.0.0.0/24 转成 16777216 16777471
+func CIDRToUint32(cidr string) (start uint32, end uint32, err error) {
+	s := strings.Split(cidr, "/")
+	if len(s) != 2 {
+		return
+	}
+	var i32 uint32 = 32
+	start, err = IPv4toUint32(s[0])
+	if err != nil {
+		return
+	}
+	netbit, err := strconv.ParseInt(s[1], 10, 64)
+	if err != nil {
+		return
+	}
+	end = 1<<(i32-uint32(netbit)) + start - 1
+	return
 }
