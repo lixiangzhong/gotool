@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+//ip格式转uint32
 func IPv4toUint32(ip string) (uint32, error) {
 	i := net.ParseIP(ip)
 	if i == nil {
@@ -17,12 +18,28 @@ func IPv4toUint32(ip string) (uint32, error) {
 	i = i.To4()
 	return binary.BigEndian.Uint32(i), nil
 }
+
+////Uint32转ip格式 old
+// func Uint32toIPv4(ipint uint32) string {
+// 	a := ipint >> 24
+// 	b := (ipint - (a << 24)) >> 16
+// 	c := (ipint - (a << 24) - (b << 16)) >> 8
+// 	d := ipint - (a << 24) - (b << 16) - (c << 8)
+// 	return fmt.Sprintf("%v.%v.%v.%v", a, b, c, d)
+// }
+
+//Uint32转ip格式
 func Uint32toIPv4(ipint uint32) string {
-	a := ipint >> 24
-	b := (ipint - (a << 24)) >> 16
-	c := (ipint - (a << 24) - (b << 16)) >> 8
-	d := ipint - (a << 24) - (b << 16) - (c << 8)
-	return fmt.Sprintf("%v.%v.%v.%v", a, b, c, d)
+	ip := make(net.IP, 4)
+	binary.BigEndian.PutUint32(ip, ipint)
+	return ip.String()
+}
+
+//Uint32转成net.IP
+func Uint32toIP(ipint uint32) net.IP {
+	ip := make(net.IP, 4)
+	binary.BigEndian.PutUint32(ip, ipint)
+	return ip
 }
 
 //获取本机网卡IP
