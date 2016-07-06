@@ -3,7 +3,6 @@ package gotool
 import (
 	"encoding/binary"
 	"errors"
-	"fmt"
 	"net"
 	"strconv"
 	"strings"
