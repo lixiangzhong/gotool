@@ -4,8 +4,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"net"
-	"strconv"
-	"strings"
 )
 
 //ip格式转uint32
@@ -61,21 +59,27 @@ func GetLocalIP() ([]string, error) {
 
 //将CIDR转成数字,如  1.0.0.0/24 转成 16777216 16777471
 func CIDRToUint32(cidr string) (start uint32, end uint32, err error) {
-	s := strings.Split(cidr, "/")
-	if len(s) != 2 {
-		err = errors.New(cidr + " is not CIDR")
-		return
-	}
-	var i32 uint32 = 32
-	start, err = IPv4toUint32(s[0])
+	i, n, err := net.ParseCIDR(cidr)
 	if err != nil {
 		return
 	}
-	netbit, err := strconv.ParseInt(s[1], 10, 64)
+	mask, bit := n.Mask.Size()
+	start, err = IPv4toUint32(i.String())
 	if err != nil {
 		return
 	}
-	end = 1<<(i32-uint32(netbit)) + start - 1
+	end = 1<<(uint32(bit-mask)) + start - 1
+	return
+}
+
+//将CIDR转成起始IP-结束IP,如  192.168.0.0/24 转成 192.168.0.0 192.168.0.255
+func CIDRToIPRange(cidr string) (startip string, endip string, err error) {
+	start, end, err := CIDRToUint32(cidr)
+	if err != nil {
+		return
+	}
+	startip = Uint32toIPv4(start)
+	endip = Uint32toIPv4(end)
 	return
 }
 
