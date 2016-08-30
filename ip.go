@@ -78,3 +78,23 @@ func CIDRToUint32(cidr string) (start uint32, end uint32, err error) {
 	end = 1<<(i32-uint32(netbit)) + start - 1
 	return
 }
+
+// Well-known IPv4 Private addresses
+var (
+	PrivateIPNet = []string{
+		"10.0.0.0/8",
+		"172.16.0.0/12",
+		"192.168.0.0/16",
+	}
+)
+
+//是否为私网ip
+func IsPrivateIP(ip string) bool {
+	for _, ipnet := range PrivateIPNet {
+		_, n, _ := net.ParseCIDR(ipnet)
+		if n.Contains(net.ParseIP(ip)) {
+			return true
+		}
+	}
+	return false
+}
