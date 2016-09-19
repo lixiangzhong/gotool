@@ -68,7 +68,11 @@ func CIDRToUint32(cidr string) (start uint32, end uint32, err error) {
 	if err != nil {
 		return
 	}
-	end = 1<<(uint32(bit-mask)) + start - 1
+	network, err := IPv4toUint32(n.IP.String())
+	if err != nil {
+		return
+	}
+	end = 1<<(uint32(bit-mask)) + network - 1
 	return
 }
 
