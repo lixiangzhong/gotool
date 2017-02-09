@@ -1,5 +1,9 @@
 package gotool
 
+import (
+	"strings"
+)
+
 func IsDomainName(s string) bool {
 	// See RFC 1035, RFC 3696.
 	if len(s) == 0 {
@@ -46,4 +50,17 @@ func IsDomainName(s string) bool {
 	}
 
 	return ok
+}
+
+func IsDomain(s string) bool {
+	var err error
+	s, err = ToASCII(s)
+	if err != nil {
+		return false
+	}
+	ss := strings.Split(s, ".")
+	if len(ss) < 2 {
+		return false
+	}
+	return IsDomainName(s)
 }

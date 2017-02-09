@@ -2,11 +2,13 @@ package gotool
 
 import (
 	"net"
+	"strings"
 	"time"
 )
 
 //指定本机某IP 与remote IP连接
 func Dial(network string, local string, remote string) (net.Conn, error) {
+	network = strings.ToLower(network)
 	dialer := &net.Dialer{
 		Timeout:   5 * time.Second,
 		KeepAlive: 30 * time.Second,
