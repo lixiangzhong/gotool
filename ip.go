@@ -3,6 +3,7 @@ package gotool
 import (
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"net"
 )
 
@@ -84,6 +85,38 @@ func CIDRToIPRange(cidr string) (startip string, endip string, err error) {
 	}
 	startip = Uint32toIPv4(start)
 	endip = Uint32toIPv4(end)
+	return
+}
+
+//将起始IP-结束IP转成CIDR,如 192.168.0.0 192.168.0.255  转成 192.168.0.0/24
+func IPRangeToCIDR(startip string, endip string) (cidr string, err error) {
+	start, err := IPv4toUint32(startip)
+	if err != nil {
+		return
+	}
+	end, err := IPv4toUint32(endip)
+	if err != nil {
+		return
+	}
+	//取主机位长度
+	bit := len(fmt.Sprintf("%b", start^end))
+	//起始地址（网络号）
+	ipint := (start >> uint32(bit)) << uint32(bit)
+	cidr = fmt.Sprintf("%v/%v", Uint32toIPv4(ipint), 32-bit)
+	return
+}
+
+// 用startip,endip计算子网掩码长度，如192.168.0.0 192.168.0.255 返回 24
+func IPNetMaskBit(startip string, endip string) (bit int, err error) {
+	start, err := IPv4toUint32(startip)
+	if err != nil {
+		return
+	}
+	end, err := IPv4toUint32(endip)
+	if err != nil {
+		return
+	}
+	bit = 32 - len(fmt.Sprintf("%b", start^end))
 	return
 }
 
