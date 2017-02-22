@@ -188,6 +188,7 @@ func adapt(delta, numPoints int32, firstTime bool) int32 {
 
 const acePrefix = "xn--"
 
+//ToASCII  中文域名转成ascii
 func ToASCII(s string) (string, error) {
 	if ascii(s) {
 		return s, nil
@@ -205,6 +206,7 @@ func ToASCII(s string) (string, error) {
 	return strings.Join(labels, "."), nil
 }
 
+//ToUnicode 将s转成中文域名
 func ToUnicode(s string) (string, error) {
 	if !strings.Contains(s, acePrefix) {
 		return s, nil

@@ -4,6 +4,7 @@ import (
 	"strings"
 )
 
+//IsDomainName 例s 为localhost 或xxxx.xxx时为true
 func IsDomainName(s string) bool {
 	// See RFC 1035, RFC 3696.
 	if len(s) == 0 {
@@ -52,6 +53,7 @@ func IsDomainName(s string) bool {
 	return ok
 }
 
+//IsDomain 只为s为xxx.xx时为true
 func IsDomain(s string) bool {
 	var err error
 	s, err = ToASCII(s)
