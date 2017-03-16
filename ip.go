@@ -120,6 +120,51 @@ func IPNetMaskBit(startip string, endip string) (bit int, err error) {
 	return
 }
 
+//将 1.1.1.0/24  转成1.1.1.0 255.255.255.0
+func CIDRToIPMask(cidr string) (string, string, error) {
+	_, ipnet, err := net.ParseCIDR(cidr)
+	if err != nil {
+		return "", "", err
+	}
+	bytesToIP := func(b []byte) string {
+		i := binary.BigEndian.Uint32(b)
+		return Uint32toIPv4(i)
+	}
+	ip := ipnet.IP.String()
+	mask := bytesToIP([]byte(ipnet.Mask))
+	return ip, mask, nil
+}
+
+//将 1.1.1.0 255.255.255.0   转成 1.1.1.0/24
+func IPMaskToCIDR(ip string, mask string) string {
+	IP := net.ParseIP(ip)
+	if IP == nil {
+		return ""
+	}
+	return fmt.Sprintf("%s/%v", IP, MaskLength(mask))
+}
+
+//计算反掩码  将255.255.255.0 转成0.0.0.255
+func InverseMask(mask string) string {
+	i, err := IPv4toUint32(mask)
+	if err != nil {
+		return ""
+	}
+	return Uint32toIPv4(^i)
+}
+
+//计算掩码长度  255.255.255.0 得出 24
+func MaskLength(mask string) int {
+	ip := net.ParseIP(mask).To4()
+	if ip == nil {
+		return 0
+	}
+	i := []byte(ip)
+	ipmask := net.IPv4Mask(i[0], i[1], i[2], i[3])
+	ones, _ := ipmask.Size()
+	return ones
+}
+
 // Well-known IPv4 Private addresses
 var (
 	PrivateIPNet = []string{
