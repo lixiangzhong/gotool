@@ -33,8 +33,10 @@ func TestIsDomain(t *testing.T) {
 		args args
 		want bool
 	}{
-		{"", args{s: "abc.com"}, true},
-		{"", args{s: "localhost"}, false},
+		{"xxx.", args{s: "xxx."}, false},
+		{"abc.com", args{s: "abc.com"}, true},
+		{"abc.com.", args{s: "abc.com."}, true},
+		{"localhost", args{s: "localhost"}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

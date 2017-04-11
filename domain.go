@@ -60,8 +60,7 @@ func IsDomain(s string) bool {
 	if err != nil {
 		return false
 	}
-	ss := strings.Split(s, ".")
-	if len(ss) < 2 {
+	if strings.Count(strings.Trim(s, "."), ".") < 1 {
 		return false
 	}
 	return IsDomainName(s)
