@@ -39,3 +39,13 @@ func CreatePidFile(path string) error {
 	data := []byte(strconv.Itoa(os.Getpid()))
 	return ioutil.WriteFile(path, data, 666)
 }
+
+func OpenFile(name string, flag int, perm os.FileMode) (*os.File, error) {
+	dir, _ := filepath.Split(name)
+	if dir != "" {
+		if err := os.MkdirAll(dir, perm); err != nil {
+			return nil, err
+		}
+	}
+	return os.OpenFile(name, flag, perm)
+}
