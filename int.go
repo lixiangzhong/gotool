@@ -1,6 +1,7 @@
 package gotool
 
 import (
+	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -34,4 +35,35 @@ func Comma(v int64) string {
 	}
 	parts[j] = strconv.Itoa(int(v))
 	return sign + strings.Join(parts[j:], ",")
+}
+
+const (
+	Byte = 1.0
+	KB   = 1024 * Byte
+	MB   = 1024 * KB
+	GB   = 1024 * MB
+	TB   = 1024 * GB
+)
+
+//将字节转成可读性好的格式 如 1024 转成 1.00 K
+func ByteFormat(bytes uint64) string {
+	value := float64(bytes)
+	var unit string
+	switch {
+	case value == 0:
+		return "0"
+	case value < KB:
+		value = value
+		unit = "B"
+	case value < MB:
+		value = value / KB
+		unit = "K"
+	case value < GB:
+		value = value / MB
+		unit = "M"
+	case value < TB:
+		value = value / GB
+		unit = "G"
+	}
+	return fmt.Sprintf("%.2f %v", value, unit)
 }
